@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Para Hermiony — (Calling Card)</title>
+  <meta name="theme-color" content="#111" />
+  <style>
+    :root{
+      --bg1:#0f0f12; --bg2:#1a1a1f; --red:#e63946; --pink:#ff6b81; --white:#fafafa; --muted:#b7b7c2;
+      --glass: rgba(255,255,255,.08);
+      --border: rgba(255,255,255,.15);
+    }
+    html,body{height:100%; margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif; background: radial-gradient(1200px 800px at 10% -10%, #1f0f14 0%, transparent 60%), linear-gradient(180deg, var(--bg1), var(--bg2)); color: var(--white); }
+    .wrap{min-height:100%; display:flex; align-items:center; justify-content:center; padding:32px;}
+    .card{
+      width:min(820px, 95vw);
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05);
+      overflow:hidden;
+      position:relative;
+    }
+    header{
+      padding:28px 28px 8px;
+      display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+    }
+    .tag{font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); border:1px solid var(--border); padding:6px 10px; border-radius:999px}
+    h1{margin:0; font-size: clamp(26px, 4vw, 36px);}
+    .sub{margin:4px 28px 20px; color:var(--muted)}
+    .cta{
+      display:flex; gap:12px; padding:0 28px 24px; flex-wrap:wrap
+    }
+    button{
+      appearance:none; border:0; cursor:pointer; font-weight:700;
+      padding:14px 18px; border-radius:12px; transition:.2s transform, .2s opacity, .2s background;
+    }
+    .btn-primary{ background:linear-gradient(90deg, var(--red), var(--pink)); color:white; }
+    .btn-primary:hover{ transform: translateY(-1px) scale(1.01); }
+    .btn-ghost{ background:transparent; color:var(--muted); border:1px solid var(--border); }
+    .letter{
+      border-top:1px solid var(--border);
+      padding: 0 28px 28px;
+      max-height:0; overflow:hidden; transition: max-height .6s ease;
+    }
+    .letter.show{ max-height: 1000px; }
+    .paper{
+      margin-top:24px;
+      background: #111;
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:22px clamp(16px, 3vw, 26px);
+      line-height:1.6;
+    }
+    .paper p{ margin: 0 0 14px; }
+    .sig{ margin-top:18px; opacity:.8; }
+
+    /* Persona-ish edge accent */
+    .edge{
+      position:absolute; inset:auto 0 0 auto; height:10px; width:100%;
+      background:
+        linear-gradient(90deg, var(--red) 0 18%, transparent 18% 22%, var(--white) 22% 26%, transparent 26% 30%, var(--pink) 30% 48%, transparent 48% 52%, var(--red) 52% 70%, transparent 70% 74%, var(--white) 74% 78%, transparent 78% 82%, var(--pink) 82% 100%);
+      filter: drop-shadow(0 -2px 8px rgba(230,57,70,.35));
+    }
+
+    /* Floating hearts */
+    .hearts { pointer-events:none; position:absolute; inset:0; overflow:hidden; opacity:.75 }
+    .hearts span{
+      position:absolute; bottom:-40px; font-size: clamp(14px, 3vw, 24px);
+      color: rgba(255,255,255,.65);
+      text-shadow: 0 0 10px rgba(230,57,70,.45);
+      animation: rise var(--dur) linear infinite;
+      transform: translateX(-50%);
+    }
+    @keyframes rise{
+      0%{ transform: translateY(0) translateX(-50%) scale(.9); opacity:.0}
+      10%{ opacity:1 }
+      90%{ opacity:1 }
+      100%{ transform: translateY(-110vh) translateX(-50%) scale(1.2); opacity:0}
+    }
+
+    footer{ padding: 8px 18px 18px; color:var(--muted); font-size:12px; text-align:center }
+    a { color: #ffd1d9; text-decoration: none; border-bottom: 1px dashed rgba(255,255,255,.25) }
+    a:hover{ border-bottom-color: rgba(255,255,255,.6) }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="hearts" id="hearts"></div>
+
+      <header>
+        <span class="tag">calling card</span>
+        <h1>Para <span style="color:var(--pink)">Hermiony</span>, do Samuel</h1>
+      </header>
+      <p class="sub">Se o destino é um dado, hoje eu escolho arriscar por nós dois.</p>
+
+      <div class="cta">
+        <button class="btn-primary" id="open">Abrir a carta</button>
+        <button class="btn-ghost" id="copy">Copiar link desta página</button>
+      </div>
+
+      <section class="letter" id="letter">
+        <div class="paper">
+          <p><strong>Hermiony,</strong></p>
+          <p>Ontem, quando você disse que daria uma chance, meu coração ficou leve de novo. Eu sei que a gente errou muito um com o outro, mas eu acredito de verdade que a nossa história não precisa acabar assim.</p>
+          <p>Eu não tô aqui pra te cobrar nada nem forçar. Só quero viver essa chance junto com você: sair, conversar, jogar, rir… e ver se a gente consegue reencontrar aquele sentimento que sempre foi nosso.</p>
+          <p>Eu sei que falhei, que já te machuquei, e me arrependo muito. Mas eu quero aprender com meus erros e ser melhor, porque você merece essa versão de mim.</p>
+          <p>Eu não quero ficar preso à dor do que aconteceu. Eu te perdoo, e espero que com o tempo você também consiga me perdoar. O que eu quero mesmo é construir algo novo contigo, de coração limpo e sincero.</p>
+          <p>Eu te amo de verdade… e só te peço essa chance de recomeçar com você. Não precisa ser perfeito, nem rápido. Só precisa ser nós dois tentando juntos.</p>
+          <p class="sig">— Samuel</p>
+        </div>
+      </section>
+
+      <div class="edge"></div>
+
+      <footer>
+        Feito com carinho. Se isso fosse <em>Persona 5</em>, este seria o meu <strong>calling card</strong> 🎭
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    // toggle letter
+    const openBtn = document.getElementById('open');
+    const letter = document.getElementById('letter');
+    openBtn.addEventListener('click', () => {
+      letter.classList.toggle('show');
+      openBtn.textContent = letter.classList.contains('show') ? 'Fechar' : 'Abrir a carta';
+    });
+
+    // copy link
+    const copyBtn = document.getElementById('copy');
+    copyBtn.addEventListener('click', async () => {
+      try{
+        await navigator.clipboard.writeText(location.href);
+        copyBtn.textContent = 'Link copiado ✓';
+        setTimeout(()=> copyBtn.textContent = 'Copiar link desta página', 1800);
+      }catch(e){
+        alert('Copie o link da barra de endereços 🙂');
+      }
+    });
+
+    // floating hearts
+    const hearts = document.getElementById('hearts');
+    const NUM = 20;
+    for(let i=0;i<NUM;i++){
+      const s = document.createElement('span');
+      s.textContent = '❤';
+      const left = Math.random()*100;
+      const delay = Math.random()*6;
+      const dur = 6 + Math.random()*6;
+      s.style.left = left + 'vw';
+      s.style.animationDelay = delay + 's';
+      s.style.setProperty('--dur', dur + 's');
+      hearts.appendChild(s);
+    }
+  </script>
+</body>
+</html>
