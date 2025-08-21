@@ -110,20 +110,17 @@
     .btn-music[aria-pressed="false"]{ background:#15151d; color:#ddd; border:1px solid rgba(255,255,255,.25) }
 
     /* ======== AUTO-SCALE WRAPPER ======== */
-    /* tudo dentro de #scaleInner é escalado 0..1 para caber em telas menores */
     #autoScale{
       position: relative;
       width: 100%;
       display: flex;
       justify-content: center;
-      /* a altura real desse contêiner é setada pelo JS: height = scrollHeight * --scale */
       min-height: 0;
     }
     #scaleInner{
-      width: 1024px;                 /* <<< BASE_W no JS: a “largura de PC” do seu design */
+      width: 1024px;                 /* BASE_W no JS */
       transform-origin: top center;
       transform: scale(var(--scale));
-      /* evita blur em alguns mobiles */
       -webkit-transform: translateZ(0) scale(var(--scale));
     }
 
@@ -319,10 +316,92 @@
       .envelope, .flap-group, .letter{ transition:none }
       .overlay-decor{ transition:none }
     }
+
+    /* ======== LOCKSCREEN (senha de 6 dígitos) ======== */
+    .lockscreen{
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: grid;
+      place-items: center;
+      background: #000;
+      padding: 24px;
+      transition: opacity .35s ease, visibility 0s linear .35s;
+    }
+    .lockscreen.hidden{
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .lock-panel{
+      width: min(520px, 92vw);
+      background: #0b0b0c;
+      border: 3px solid #fff;
+      border-radius: 18px;
+      padding: 22px 22px 18px;
+      text-align: center;
+      box-shadow: 0 22px 60px rgba(0,0,0,.6);
+    }
+    .lock-title{
+      font-family: var(--p5-font);
+      font-size: 28px;
+      margin: 0 0 6px;
+      letter-spacing: .04em;
+    }
+    .lock-sub{ color: #d9d9d9; margin: 0 0 14px; font-size: 14px }
+    .pin{
+      display:flex; gap:12px; justify-content:center; margin: 10px 0 14px;
+    }
+    .pin input{
+      width: 56px; height: 68px;
+      font-size: 28px; text-align:center;
+      border: 3px solid #fff; border-radius: 12px;
+      background: #111; color:#fff; outline: none;
+      transition: transform .1s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+    .pin input:focus{
+      border-color: var(--red);
+      box-shadow: 0 0 0 4px rgba(230,0,18,.25);
+      transform: translateY(-2px);
+    }
+    .lock-btn{
+      appearance:none; border:0; cursor:pointer;
+      padding: 12px 16px; border-radius: 12px;
+      font-weight: 900; letter-spacing: .06em; text-transform: uppercase;
+      background: linear-gradient(90deg, var(--red), #ff3d4d); color: #fff;
+      box-shadow: 0 10px 24px rgba(0,0,0,.35);
+    }
+    .lock-error{ min-height: 1.4em; color: #ff8088; font-weight: 700; margin-top: 8px }
+    .shake{ animation: lockshake .28s ease 0s 2 }
+    @keyframes lockshake{
+      0%,100%{ transform: translateX(0) }
+      25%{ transform: translateX(-6px) }
+      75%{ transform: translateX(6px) }
+    }
   </style>
 </head>
 <body>
-  <div class="stage">
+  <!-- ======== TELA DE SENHA ======== -->
+  <div class="lockscreen" id="lockscreen" aria-modal="true" role="dialog" aria-label="Digite a senha">
+    <div class="lock-panel" id="lockPanel">
+      <h2 class="lock-title">Acesso restrito</h2>
+      <p class="lock-sub">Digite a senha de <strong>6 dígitos</strong> para continuar.</p>
+      <form id="lockForm" autocomplete="one-time-code">
+        <div class="pin">
+          <input class="digit" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Dígito 1" />
+          <input class="digit" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Dígito 2" />
+          <input class="digit" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Dígito 3" />
+          <input class="digit" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Dígito 4" />
+          <input class="digit" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Dígito 5" />
+          <input class="digit" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Dígito 6" />
+        </div>
+        <button class="lock-btn" type="submit">Entrar</button>
+        <div class="lock-error" id="lockError"></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="stage" aria-hidden="true">
     <div class="hud">
       <button id="musicToggle" class="btn btn-music" aria-pressed="true" aria-label="Música ligada">🎵 ON</button>
     </div>
@@ -345,92 +424,37 @@
             </div>
 
             <!-- DECORAÇÃO (abaixo do triângulo, sobre o corpo do envelope) -->
-            <!-- Decorações (abaixo do triângulo, sobre o corpo do envelope) -->
-
-
-<img
-  class="decoration"
-  src="assets/img/overlay-decor-4.png"
-  alt="" aria-hidden="true"
-  style="
-    left: 50%;
-    top: 30%;
-    width: 260px;
-    transform:
-      translate(-50%, 0)
-      rotate(0deg)
-      scale(1.15);
-    opacity: 1;
-    z-index: 2;
-  "
-/>
-<img
-  class="decoration"
-  src="assets/img/overlay-decor-1.png"
-  alt="" aria-hidden="true"
-  style="
-    left: 68%;          /* % ou px — posição X dentro do envelope */
-    top: 10%;           /* % ou px — posição Y dentro do envelope */
-    width: 200px;       /* tamanho (altura ajusta automático) */
-    transform:
-      translate(-50%, 0)  /* mantém centrado no eixo X */
-      rotate(-6deg)        /* rotação */
-      scale(1);            /* escala */
-    opacity: 1;          /* 0 a 1 */
-    z-index: 2;          /* 2 = sobre o corpo, abaixo da aba (3) */
-  "
-/>
-
-<img
-  class="decoration"
-  src="assets/img/overlay-decor-6.png"
-  alt="" aria-hidden="true"
-  style="
-    left: 50%;          /* % ou px — posição X dentro do envelope */
-    top: -25%;           /* % ou px — posição Y dentro do envelope */
-    width: 400px;       /* tamanho (altura ajusta automático) */
-    transform:
-      translate(-50%, 0)  /* mantém centrado no eixo X */
-      rotate(0deg)        /* rotação */
-      scale(1);            /* escala */
-    opacity: 1;          /* 0 a 1 */
-    z-index: 2;          /* 2 = sobre o corpo, abaixo da aba (3) */
-  "
-/>
-
-<img
-  class="decoration"
-  src="assets/img/overlay-decor-9.png"
-  alt="" aria-hidden="true"
-  style="
-    left: 20%;          /* % ou px — posição X dentro do envelope */
-    top: 30%;           /* % ou px — posição Y dentro do envelope */
-    width: 200px;       /* tamanho (altura ajusta automático) */
-    transform:
-      translate(-50%, 0)  /* mantém centrado no eixo X */
-      rotate(-6deg)        /* rotação */
-      scale(1);            /* escala */
-    opacity: 1;          /* 0 a 1 */
-    z-index: 2;          /* 2 = sobre o corpo, abaixo da aba (3) */
-  "
-/>
-
-<img
-  class="decoration"
-  src="assets/img/overlay-decor-10.png"
-  alt="" aria-hidden="true"
-  style="
-    left: 80%;          /* % ou px — posição X dentro do envelope */
-    top: 35%;           /* % ou px — posição Y dentro do envelope */
-    width: 200px;       /* tamanho (altura ajusta automático) */
-    transform:
-      translate(-50%, 0)  /* mantém centrado no eixo X */
-      rotate(-6deg)        /* rotação */
-      scale(1);            /* escala */
-    opacity: 1;          /* 0 a 1 */
-    z-index: 2;          /* 2 = sobre o corpo, abaixo da aba (3) */
-  "
-/>
+            <!-- Edite/duplique estas imagens e ajuste left/top/width/rotate/scale no style -->
+            <img
+              class="decoration"
+              src="assets/img/overlay-decor-4.png"
+              alt="" aria-hidden="true"
+              style="left: 50%; top: 30%; width: 260px; transform: translate(-50%,0) rotate(0deg) scale(1.15); opacity:1; z-index:2;"
+            />
+            <img
+              class="decoration"
+              src="assets/img/overlay-decor-1.png"
+              alt="" aria-hidden="true"
+              style="left: 68%; top: 10%; width: 200px; transform: translate(-50%,0) rotate(-6deg) scale(1); opacity:1; z-index:2;"
+            />
+            <img
+              class="decoration"
+              src="assets/img/overlay-decor-6.png"
+              alt="" aria-hidden="true"
+              style="left: 50%; top: -25%; width: 400px; transform: translate(-50%,0) rotate(0deg) scale(1); opacity:1; z-index:2;"
+            />
+            <img
+              class="decoration"
+              src="assets/img/overlay-decor-9.png"
+              alt="" aria-hidden="true"
+              style="left: 20%; top: 30%; width: 200px; transform: translate(-50%,0) rotate(-6deg) scale(1); opacity:1; z-index:2;"
+            />
+            <img
+              class="decoration"
+              src="assets/img/overlay-decor-10.png"
+              alt="" aria-hidden="true"
+              style="left: 80%; top: 35%; width: 200px; transform: translate(-50%,0) rotate(-6deg) scale(1); opacity:1; z-index:2;"
+            />
           </div>
 
           <!-- CARTA -->
@@ -462,33 +486,26 @@
 
           <!-- OVERLAY POR CIMA DE TUDO DA CARTA -->
           <div class="overlay-layer" id="overlayLayer">
-            <!-- EXISTENTE -->
-
-            <!-- ADICIONE MAIS PNGs DUPLICANDO ESTES BLOCOS ↓↓↓ -->
             <img class="overlay-decor"
                  src="assets/img/overlay-decor-2.png"
                  alt="" aria-hidden="true"
                  style="--x: 78%; --y: 13%; --w: 320px; --rot: 0deg; --op: 1;" />
-
             <img class="overlay-decor"
                  src="assets/img/overlay-decor-3.png"
                  alt="" aria-hidden="true"
                  style="--x: 78%; --y: 15%; --w: 200px; --rot: -15deg; --op: 1;" />
-          
             <img class="overlay-decor"
                  src="assets/img/overlay-decor-5.png"
                  alt="" aria-hidden="true"
                  style="--x: 85%; --y: 83%; --w: 150px; --rot: 0deg; --op: .98;" />
-
             <img class="overlay-decor"
                  src="assets/img/overlay-decor-7.png"
                  alt="" aria-hidden="true"
-                 style="--x: 50%; --y: 92%; --w: 600px; --rot:-0deg; --op: .98;" />
-
+                 style="--x: 50%; --y: 92%; --w: 600px; --rot: 0deg; --op: .98;" />
             <img class="overlay-decor"
                  src="assets/img/overlay-decor-8.png"
                  alt="" aria-hidden="true"
-                 style="--x: 50%; --y: 87%; --w: 100px; --rot:-0deg; --op: .98;" />
+                 style="--x: 50%; --y: 87%; --w: 100px; --rot: 0deg; --op: .98;" />
           </div>
         </div>
       </div>
@@ -499,21 +516,75 @@
   <audio id="bgm" src="assets/audio/calling-card-theme.mp3" loop preload="auto"></audio>
 
   <script>
+    // ======= PASSWORD GATE =======
+    const PASS = '120321'; // <<< TROQUE SUA SENHA AQUI (6 dígitos)
+    let isUnlocked = false;
+
+    const lock = document.getElementById('lockscreen');
+    const lockPanel = document.getElementById('lockPanel');
+    const lockForm = document.getElementById('lockForm');
+    const lockError = document.getElementById('lockError');
+    const digitInputs = Array.from(lockForm.querySelectorAll('.digit'));
+
+    function focusFirst(){ digitInputs[0].focus(); }
+
+    digitInputs.forEach((inp, i)=>{
+      inp.addEventListener('input', ()=>{
+        // mantém só número e 1 char
+        inp.value = inp.value.replace(/\D/g,'').slice(0,1);
+        if(inp.value && i < digitInputs.length-1){
+          digitInputs[i+1].focus();
+        }
+      });
+      inp.addEventListener('keydown', (e)=>{
+        if(e.key === 'Backspace' && !inp.value && i>0){
+          digitInputs[i-1].focus();
+        }
+        if(e.key === 'ArrowLeft' && i>0){
+          e.preventDefault(); digitInputs[i-1].focus();
+        }
+        if(e.key === 'ArrowRight' && i<digitInputs.length-1){
+          e.preventDefault(); digitInputs[i+1].focus();
+        }
+      });
+    });
+
+    function getCode(){ return digitInputs.map(d=>d.value).join(''); }
+    function clearCode(){ digitInputs.forEach(d=>d.value=''); focusFirst(); }
+
+    lockForm.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const code = getCode();
+      if(code.length !== 6){
+        lockError.textContent = 'Complete os 6 dígitos';
+        lockPanel.classList.add('shake'); setTimeout(()=>lockPanel.classList.remove('shake'), 320);
+        return;
+      }
+      if(code === PASS){
+        isUnlocked = true;
+        lock.classList.add('hidden');
+        document.querySelector('.stage')?.setAttribute('aria-hidden','false');
+      }else{
+        lockError.textContent = 'Senha incorreta';
+        lockPanel.classList.add('shake'); setTimeout(()=>lockPanel.classList.remove('shake'), 320);
+        clearCode();
+      }
+    });
+
+    window.addEventListener('load', focusFirst);
+
     // ======= AUTO-SCALE =======
-    // Mantém o “look de PC” e reduz proporcionalmente em telas menores
-    const BASE_W = 1024; // << se seu PC for 1280, mude aqui
+    const BASE_W = 1024; // largura base do seu layout no PC
     const autoScale   = document.getElementById('autoScale');
     const scaleInner  = document.getElementById('scaleInner');
 
     function applyScale(){
       const vw = Math.max(320, window.innerWidth);
-      const s = Math.min(vw / BASE_W, 1);               // nunca aumenta além do PC
+      const s = Math.min(vw / BASE_W, 1);
       document.documentElement.style.setProperty('--scale', s);
-      // ajusta a altura real do contêiner para o layout não “cortar”
       const targetH = scaleInner.scrollHeight * s;
       autoScale.style.height = targetH + 'px';
     }
-    // aplica em load/resize/orientação
     addEventListener('load', applyScale, {once:true});
     addEventListener('resize', applyScale);
     addEventListener('orientationchange', ()=>setTimeout(applyScale, 60));
@@ -531,6 +602,7 @@
     let hasInteracted = false;
 
     function startMusicOnce(){
+      if(!isUnlocked) return; // bloqueia antes da senha
       if(hasInteracted) return;
       hasInteracted = true;
       safePlay();
@@ -557,11 +629,11 @@
       const target = letter.scrollHeight;
       letter.style.setProperty('--_openH', target + 'px'); // útil p/ .letter.scroll.show
       letter.style.maxHeight = target + 'px';
-      // re-calcula auto-scale porque a altura mudou
       applyScale();
     }
 
     function openLetter(){
+      if(!isUnlocked) return; // bloqueia antes da senha
       envelope.classList.add('open'); // abre o triângulo
       letter.classList.add('show');
       requestAnimationFrame(()=>{ setOpenHeight(); });
@@ -577,6 +649,7 @@
     }
 
     function closeLetter(){
+      if(!isUnlocked) return; // bloqueia antes da senha
       overlay.classList.remove('overlay-active');
       envelope.classList.remove('open'); // fecha o triângulo
 
@@ -592,8 +665,8 @@
       letter.addEventListener('transitionend', onEnd);
     }
 
-    // Recalcula auto-scale após imagens decorativas carregarem (altura muda)
-    document.querySelectorAll('.overlay-decor,.decoration img').forEach(img=>{
+    // Recalcula auto-scale após imagens decorativas/carregarem
+    document.querySelectorAll('.overlay-decor, .decoration').forEach(img=>{
       if(img.complete) return;
       img.addEventListener('load', applyScale);
     });
@@ -621,6 +694,7 @@
 
     // botão de música
     toggle.addEventListener('click', ()=>{
+      if(!isUnlocked) return; // bloqueia antes da senha
       const on = toggle.getAttribute('aria-pressed') === 'true';
       if(on){
         toggle.setAttribute('aria-pressed','false');
