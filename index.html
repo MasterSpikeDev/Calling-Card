@@ -10,7 +10,7 @@
   <link rel="preload" href="assets/audio/calling-card-theme.mp3" as="audio" />
 
   <!-- fonte (diretório informado) -->
-  <link rel="preload" href="assets/fonts/persona_font2.otf" as="font" type="font/otf" crossorigin>
+  <link rel="preload" href="assets/fonts/persona_font4.ttf" as="font" type="font/ttf" crossorigin>
 
   <!-- fallback (HUD) -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
@@ -19,7 +19,7 @@
     /* ======== Fonte Persona ======== */
     @font-face{
       font-family: "P5Persona";
-      src: url("assets/fonts/persona_font.otf") format("opentype");
+      src: url("assets/fonts/persona_font4.ttf") format("opentype");
       font-weight: 400 900;
       font-style: normal;
       font-display: swap;
@@ -58,8 +58,8 @@
 
       --red:#e60012;
       --black:#0b0b0c;
-      --white:#fafafa;
-      --paper:#fffdf7;
+      --white:#ffffff;
+      --paper:#ffffff;
       --shadow: rgba(0,0,0,.50);
       --bg:url("assets/img/p5-bg.png");
 
@@ -188,7 +188,7 @@
       cursor:pointer;
       z-index:3;
     }
-    .seal:focus-visible{ outline:3px solid #fff; outline-offset:4px }
+    .seal:focus-visible{ outline:0px solid #fff; outline-offset:4px }
     .seal > img{ width:100%; height:100%; display:block; object-fit:contain; border-radius:0; box-shadow:none; pointer-events:none; }
 
     /* DECORAÇÃO ABAIXO DO TRIÂNGULO (sobre o corpo) */
@@ -345,7 +345,92 @@
             </div>
 
             <!-- DECORAÇÃO (abaixo do triângulo, sobre o corpo do envelope) -->
-            <img class="decoration" src="assets/img/decoracao-1.png" alt="" aria-hidden="true" />
+            <!-- Decorações (abaixo do triângulo, sobre o corpo do envelope) -->
+
+
+<img
+  class="decoration"
+  src="assets/img/overlay-decor-4.png"
+  alt="" aria-hidden="true"
+  style="
+    left: 50%;
+    top: 30%;
+    width: 260px;
+    transform:
+      translate(-50%, 0)
+      rotate(0deg)
+      scale(1.15);
+    opacity: 1;
+    z-index: 2;
+  "
+/>
+<img
+  class="decoration"
+  src="assets/img/overlay-decor-1.png"
+  alt="" aria-hidden="true"
+  style="
+    left: 68%;          /* % ou px — posição X dentro do envelope */
+    top: 10%;           /* % ou px — posição Y dentro do envelope */
+    width: 200px;       /* tamanho (altura ajusta automático) */
+    transform:
+      translate(-50%, 0)  /* mantém centrado no eixo X */
+      rotate(-6deg)        /* rotação */
+      scale(1);            /* escala */
+    opacity: 1;          /* 0 a 1 */
+    z-index: 2;          /* 2 = sobre o corpo, abaixo da aba (3) */
+  "
+/>
+
+<img
+  class="decoration"
+  src="assets/img/overlay-decor-6.png"
+  alt="" aria-hidden="true"
+  style="
+    left: 50%;          /* % ou px — posição X dentro do envelope */
+    top: -25%;           /* % ou px — posição Y dentro do envelope */
+    width: 400px;       /* tamanho (altura ajusta automático) */
+    transform:
+      translate(-50%, 0)  /* mantém centrado no eixo X */
+      rotate(0deg)        /* rotação */
+      scale(1);            /* escala */
+    opacity: 1;          /* 0 a 1 */
+    z-index: 2;          /* 2 = sobre o corpo, abaixo da aba (3) */
+  "
+/>
+
+<img
+  class="decoration"
+  src="assets/img/overlay-decor-9.png"
+  alt="" aria-hidden="true"
+  style="
+    left: 20%;          /* % ou px — posição X dentro do envelope */
+    top: 30%;           /* % ou px — posição Y dentro do envelope */
+    width: 200px;       /* tamanho (altura ajusta automático) */
+    transform:
+      translate(-50%, 0)  /* mantém centrado no eixo X */
+      rotate(-6deg)        /* rotação */
+      scale(1);            /* escala */
+    opacity: 1;          /* 0 a 1 */
+    z-index: 2;          /* 2 = sobre o corpo, abaixo da aba (3) */
+  "
+/>
+
+<img
+  class="decoration"
+  src="assets/img/overlay-decor-10.png"
+  alt="" aria-hidden="true"
+  style="
+    left: 80%;          /* % ou px — posição X dentro do envelope */
+    top: 35%;           /* % ou px — posição Y dentro do envelope */
+    width: 200px;       /* tamanho (altura ajusta automático) */
+    transform:
+      translate(-50%, 0)  /* mantém centrado no eixo X */
+      rotate(-6deg)        /* rotação */
+      scale(1);            /* escala */
+    opacity: 1;          /* 0 a 1 */
+    z-index: 2;          /* 2 = sobre o corpo, abaixo da aba (3) */
+  "
+/>
           </div>
 
           <!-- CARTA -->
@@ -355,15 +440,17 @@
 
               <!-- CONTEÚDO DO TEXTO (clicável para FECHAR) -->
               <div class="paper-content" id="paperContent" role="button" tabindex="0" title="Clique para fechar">
-                <p><strong>Para: Lady Moon,</strong></p>
+                <p>­­­ㅤㅤ</p>
                 <p>Ontem, quando você me disse que estaria disposta a dar uma chance, meu coração se aliviou como não sentia há muito tempo. Eu sei que nós erramos, eu falhei contigo e você comigo, mas continuo acreditando que a nossa história não precisa acabar assim.</p>
                 <p>Eu não estou aqui para te cobrar nada, nem para forçar sentimentos. Só quero viver essa chance que você mesma ofereceu: sair, conversar, rir, jogar… e reencontrar aquele amor romântico que sempre foi só nosso.</p>
                 <p>Eu reconheço os erros que cometi, e sei a dor que te causei. Mas aprendi com isso e estou disposto a ser melhor, porque você merece essa versão de mim. Sobre o que aconteceu entre nós, não quero mais viver preso às mágoas. Eu te perdoo, e espero que com o tempo você também consiga me perdoar.</p>
                 <p>Mas não pense que isso é apenas uma súplica comum. Hoje, neste parque, o mesmo em que gravamos nossas iniciais dentro de um coração naquela árvore, símbolo de quatro anos lado a lado, eu declaro minha verdadeira missão a partir de hoje, roubar de volta o seu coração, revelar seu tesouro e reconquistar o seu amor romântico por mim.</p>
                 <p>Prepare-se, Lady Moon. Assim como os Phantom Thieves, eu não falho em minha missão. Depois desse dia, diante dessa árvore que ainda guarda nosso símbolo, eu irei te abraçar… e, se me permitir, eu vou te beijar como nunca visto antes.</p>
-                <p>E então, diante de tudo que passamos e de tudo que ainda podemos viver, eu pergunto:</p>
+                <p>E então, diante de tudo que passamos e de tudo que ainda podemos viver, eu anuncio, irei roubar o seu coração, mas apenas se você mostrar o seu tesouro para mim:</p>
                 <p>Posso roubar o seu coração e voltar a ser o seu namorado?</p>
                 <p class="sig">— Spike, o ladrão que nunca desistiu de você, e nunca irá.</p>
+                <p>­­­ㅤㅤ</p>
+                <p>­­­ㅤㅤ</p>
                 <div class="edge" aria-hidden="true"></div>
               </div>
 
@@ -374,21 +461,32 @@
           <!-- OVERLAY POR CIMA DE TUDO DA CARTA -->
           <div class="overlay-layer" id="overlayLayer">
             <!-- EXISTENTE -->
-            <img class="overlay-decor"
-                 src="assets/img/overlay-decor-1.png"
-                 alt="" aria-hidden="true"
-                 style="--x: 62%; --y: 12.6%; --w: 260px; --rot: 0deg; --op: .98;" />
 
             <!-- ADICIONE MAIS PNGs DUPLICANDO ESTES BLOCOS ↓↓↓ -->
             <img class="overlay-decor"
                  src="assets/img/overlay-decor-2.png"
                  alt="" aria-hidden="true"
-                 style="--x: 80%; --y: 15%; --w: 320px; --rot: 0deg; --op: .92;" />
+                 style="--x: 80%; --y: 14%; --w: 320px; --rot: 0deg; --op: .92;" />
 
             <img class="overlay-decor"
                  src="assets/img/overlay-decor-3.png"
                  alt="" aria-hidden="true"
-                 style="--x: 80%; --y: 28%; --w: 280px; --rot: -14deg; --op: .98;" />
+                 style="--x: 80%; --y: 16%; --w: 200px; --rot: -15deg; --op: .98;" />
+          
+            <img class="overlay-decor"
+                 src="assets/img/overlay-decor-5.png"
+                 alt="" aria-hidden="true"
+                 style="--x: 85%; --y: 80%; --w: 150px; --rot: 0deg; --op: .98;" />
+
+            <img class="overlay-decor"
+                 src="assets/img/overlay-decor-7.png"
+                 alt="" aria-hidden="true"
+                 style="--x: 50%; --y: 92%; --w: 600px; --rot:-0deg; --op: .98;" />
+
+            <img class="overlay-decor"
+                 src="assets/img/overlay-decor-8.png"
+                 alt="" aria-hidden="true"
+                 style="--x: 50%; --y: 85%; --w: 100px; --rot:-0deg; --op: .98;" />
           </div>
         </div>
       </div>
