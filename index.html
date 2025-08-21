@@ -3,159 +3,484 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Para Hermiony — (Calling Card)</title>
-  <meta name="theme-color" content="#111" />
+  <title>Calling Card — Persona vibe</title>
+  <meta name="theme-color" content="#e60012" />
+
+  <!-- áudio -->
+  <link rel="preload" href="assets/audio/calling-card-theme.mp3" as="audio" />
+
+  <!-- fonte (diretório informado) -->
+  <!-- <link rel="preload" href="assets/fonts/persona_font.woff2" as="font" type="font/woff2" crossorigin> -->
+  <link rel="preload" href="assets/fonts/persona_font.otf" as="font" type="font/otf" crossorigin>
+
+  <!-- fallback (HUD) -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+
   <style>
+    /* ======== Fonte Persona ======== */
+    @font-face{
+      font-family: "P5Persona";
+      /* src: url("assets/fonts/persona_font.woff2") format("woff2"), */
+      src: url("assets/fonts/persona_font.otf") format("opentype");
+      font-weight: 400 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
     :root{
-      --bg1:#0f0f12; --bg2:#1a1a1f; --red:#e63946; --pink:#ff6b81; --white:#fafafa; --muted:#b7b7c2;
-      --glass: rgba(255,255,255,.08);
-      --border: rgba(255,255,255,.15);
-    }
-    html,body{height:100%; margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif; background: radial-gradient(1200px 800px at 10% -10%, #1f0f14 0%, transparent 60%), linear-gradient(180deg, var(--bg1), var(--bg2)); color: var(--white); }
-    .wrap{min-height:100%; display:flex; align-items:center; justify-content:center; padding:32px;}
-    .card{
-      width:min(820px, 95vw);
-      background: var(--glass);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      box-shadow: 0 20px 50px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05);
-      overflow:hidden;
-      position:relative;
-    }
-    header{
-      padding:28px 28px 8px;
-      display:flex; align-items:center; gap:14px; flex-wrap:wrap;
-    }
-    .tag{font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); border:1px solid var(--border); padding:6px 10px; border-radius:999px}
-    h1{margin:0; font-size: clamp(26px, 4vw, 36px);}
-    .sub{margin:4px 28px 20px; color:var(--muted)}
-    .cta{
-      display:flex; gap:12px; padding:0 28px 24px; flex-wrap:wrap
-    }
-    button{
-      appearance:none; border:0; cursor:pointer; font-weight:700;
-      padding:14px 18px; border-radius:12px; transition:.2s transform, .2s opacity, .2s background;
-    }
-    .btn-primary{ background:linear-gradient(90deg, var(--red), var(--pink)); color:white; }
-    .btn-primary:hover{ transform: translateY(-1px) scale(1.01); }
-    .btn-ghost{ background:transparent; color:var(--muted); border:1px solid var(--border); }
-    .letter{
-      border-top:1px solid var(--border);
-      padding: 0 28px 28px;
-      max-height:0; overflow:hidden; transition: max-height .6s ease;
-    }
-    .letter.show{ max-height: 1000px; }
-    .paper{
-      margin-top:24px;
-      background: #111;
-      border:1px solid var(--border);
-      border-radius:16px;
-      padding:22px clamp(16px, 3vw, 26px);
-      line-height:1.6;
-    }
-    .paper p{ margin: 0 0 14px; }
-    .sig{ margin-top:18px; opacity:.8; }
+      --p5-font: "P5Persona", Montserrat, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 
-    /* Persona-ish edge accent */
-    .edge{
-      position:absolute; inset:auto 0 0 auto; height:10px; width:100%;
+      /* >>> CONTROLES VISUAIS <<< */
+      --paper-pad: clamp(32px, 5vw, 72px);     /* espaço interno do papel (aumente p/ + “background”) */
+      --measure: 62ch;                         /* largura máx. do texto corrido */
+      --letter-w: min(840px, 96vw);            /* largura da carta/papel */
+
+      /* >>> TEXTO DA CARTA <<< */
+      --letter-size: clamp(30px, 1vw, 50px);
+      --letter-lh: 1.7;
+      --letter-p-gap: 30px;                    /* espaçamento SÓ entre parágrafos */
+
+      /* >>> ALTURA/ANIMAÇÃO DA CARTA <<< */
+      --letter-closed-h: 2px;                  /* altura inicial (fechada) */
+      --letter-speed: .9s;                     /* velocidade de abrir/fechar */
+
+      /* Selo (na aba) */
+      --seal-size: 200px;
+      --seal-top: 50%;
+
+      /* Decoração abaixo do triângulo (sobre o corpo) */
+      --decor-w: 360px;
+      --decor-top: 64%;
+
+      --red:#e60012;
+      --black:#0b0b0c;
+      --white:#fafafa;
+      --paper:#fffdf7;
+      --shadow: rgba(0,0,0,.50);
+      --bg:url("assets/img/p5-bg.png");
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      height:100%; margin:0; background:#000; color:var(--white);
+      font-family: Montserrat, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+
+    /* ======== CENÁRIO ======== */
+    .stage{
+      min-height: 100dvh;
+      position: relative;
+      overflow: visible;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 24px 20px 96px;
+
       background:
-        linear-gradient(90deg, var(--red) 0 18%, transparent 18% 22%, var(--white) 22% 26%, transparent 26% 30%, var(--pink) 30% 48%, transparent 48% 52%, var(--red) 52% 70%, transparent 70% 74%, var(--white) 74% 78%, transparent 78% 82%, var(--pink) 82% 100%);
-      filter: drop-shadow(0 -2px 8px rgba(230,57,70,.35));
+        radial-gradient(1200px 800px at 10% -20%, rgba(0,0,0,.65), transparent 60%),
+        radial-gradient(900px 900px at 110% 120%, rgba(0,0,0,.55), transparent 60%),
+        var(--bg);
+      background-size: cover, cover, cover;
+      background-position: center, center, center;
+      background-attachment: fixed;
+      isolation:isolate;
     }
 
-    /* Floating hearts */
-    .hearts { pointer-events:none; position:absolute; inset:0; overflow:hidden; opacity:.75 }
-    .hearts span{
-      position:absolute; bottom:-40px; font-size: clamp(14px, 3vw, 24px);
-      color: rgba(255,255,255,.65);
-      text-shadow: 0 0 10px rgba(230,57,70,.45);
-      animation: rise var(--dur) linear infinite;
-      transform: translateX(-50%);
+    /* ======== HUD ======== */
+    .hud{
+      position:fixed; inset:16px 16px auto auto; z-index:10; display:flex; gap:10px; align-items:center
     }
-    @keyframes rise{
-      0%{ transform: translateY(0) translateX(-50%) scale(.9); opacity:.0}
-      10%{ opacity:1 }
-      90%{ opacity:1 }
-      100%{ transform: translateY(-110vh) translateX(-50%) scale(1.2); opacity:0}
+    .btn{
+      appearance:none; border:0; cursor:pointer; user-select:none;
+      padding:12px 14px; border-radius:12px; font-weight:900;
+      text-transform:uppercase; letter-spacing:.08em;
+      box-shadow: 0 10px 24px rgba(0,0,0,.35);
+      transition: transform .15s ease, opacity .2s ease, background .2s ease;
+    }
+    .btn:active{ transform: translateY(1px) scale(.99) }
+    .btn-music{ background:linear-gradient(90deg, var(--red), #ff3d4d); color:#fff }
+    .btn-music[aria-pressed="false"]{ background:#15151d; color:#ddd; border:1px solid rgba(255,255,255,.25) }
+
+    /* ======== ENVELOPE ======== */
+    .wrap{ position:relative; z-index:2; width:var(--letter-w); }
+
+    .envelope{
+      position:relative;
+      width:var(--letter-w);
+      aspect-ratio: 16/10;
+      margin: 8px auto 0;
+      transform: translateY(0);
+      transition: transform .6s ease;
+      cursor:pointer;
+      filter: drop-shadow(0 30px 70px var(--shadow));
+      perspective: 1200px;
+      transform-style: preserve-3d;
     }
 
-    footer{ padding: 8px 18px 18px; color:var(--muted); font-size:12px; text-align:center }
-    a { color: #ffd1d9; text-decoration: none; border-bottom: 1px dashed rgba(255,255,255,.25) }
-    a:hover{ border-bottom-color: rgba(255,255,255,.6) }
+    .envelope .body{
+      position:absolute; inset:0;
+      border-radius: 18px;
+      background: linear-gradient(#fff,#f7f7f7);
+      border: 4px solid #000;
+      z-index:1;
+    }
+
+    .flap-group{
+      position:absolute; inset:0;
+      transform-origin: top center;
+      transition: transform .7s cubic-bezier(.2,.8,.2,1);
+      z-index:3;
+      transform-style: preserve-3d;
+    }
+    /* >>> abre o triângulo */
+    .envelope.open .flap-group{ transform: rotateX(150deg); }
+
+    .flap-edge{
+      position:absolute; inset: -2px;
+      clip-path: polygon(0 0,100% 0,100% 56%,50% 86%,0 56%);
+      background:#000; border-radius: 30px 30px 40px 40px;
+      z-index:1;
+    }
+    .flap{
+      position:absolute; inset:0;
+      clip-path: polygon(0 0,100% 0,100% 56%,50% 86%,0 56%);
+      background: linear-gradient(#fff,#f3f3f3);
+      border-radius: 30px 30px 30px 30px;
+      z-index:2;
+    }
+
+    /* SELO (imagem) dentro da flap-group */
+    .seal{
+      position:absolute;
+      left:50%;
+      top:var(--seal-top);
+      transform: translate(-50%,-50%);
+      width:var(--seal-size);
+      height:var(--seal-size);
+      padding:0;
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      z-index:3;
+    }
+    .seal:focus-visible{ outline:3px solid #fff; outline-offset:4px }
+    .seal > img{ width:100%; height:100%; display:block; object-fit:contain; border-radius:0; box-shadow:none; pointer-events:none; }
+
+    /* DECORAÇÃO ABAIXO DO TRIÂNGULO (sobre o corpo) */
+    .decoration{
+      position:absolute;
+      left:50%;
+      top: var(--top, var(--decor-top));
+      transform: translate(-50%, 0) rotate(var(--rot, 0deg));
+      width: var(--w, var(--decor-w));
+      height:auto;
+      z-index:2;
+      pointer-events:none;
+      image-rendering: -webkit-optimize-contrast;
+    }
+
+    .envelope.open{ transform: translateY(-8px) }
+
+    /* ======== CARTA ======== */
+    .letter{
+      position:relative; width:var(--letter-w); margin:24px auto 0;
+      max-height: var(--letter-closed-h);  /* começa fechada */
+      opacity: 0;
+      overflow:hidden;                     /* impede vazar enquanto anima */
+      transition:
+        max-height var(--letter-speed) ease .1s,
+        opacity .25s ease .05s;
+      background: transparent;
+      border-radius:16px;
+      z-index:0;
+    }
+    .letter.show{ opacity: 1; }
+
+    /* (opção: scroll interno) — adicione a classe "scroll" na <section> */
+    .letter.scroll.show{
+      max-height: min(var(--_openH, 9999px), 82vh);
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      background-clip: padding-box;
+    }
+
+    /* Papel e camadas internas */
+    .paper{
+      position:relative;
+      margin: 10px;
+      padding: var(--paper-pad);
+      background: var(--paper);
+      color:#111;
+      border: 4px solid #000;
+      box-shadow: 0 14px 26px rgba(0,0,0,.35);
+      clip-path: polygon(2% 4%, 98% 0%, 100% 6%, 96% 12%, 100% 18%, 98% 24%, 100% 30%, 98% 36%, 100% 42%, 98% 48%, 100% 54%, 98% 60%, 100% 66%, 96% 72%, 100% 78%, 98% 84%, 100% 90%, 98% 96%, 2% 100%, 0% 94%, 4% 88%, 0% 82%, 4% 76%, 0% 70%, 4% 64%, 0% 58%, 4% 52%, 0% 46%, 4% 40%, 0% 34%, 4% 28%, 0% 22%, 4% 16%, 0% 10%);
+      overflow:hidden;
+    }
+
+    /* UNDER: entre o papel e o texto */
+    .paper-decor--under{ pointer-events:none; position:absolute; inset:0; z-index:1; }
+
+    /* CONTEÚDO DO TEXTO (clicável para FECHAR) */
+    .paper-content{
+      position:relative; z-index:3;
+      cursor: pointer;
+      font-family: var(--p5-font);
+      letter-spacing: .02em;
+
+      overflow-wrap: anywhere;
+      word-break: normal;
+      hyphens: auto;
+
+      max-width: var(--measure);
+      width: 100%;
+      margin-inline: auto;
+    }
+    /* Só parágrafos usam o gap controlado */
+    .paper-content p{
+      font-size: var(--letter-size);
+      line-height: var(--letter-lh);
+      margin: 0 0 var(--letter-p-gap);
+    }
+    .paper-content p:last-child{ margin-bottom: 0; }
+
+    /* OVER: por cima do texto (mas ainda dentro do papel) */
+    .paper-decor--over{ pointer-events:none; position:absolute; inset:0; z-index:4; }
+
+    /* Decorações no texto (opcionais) */
+    .text-decor{
+      position:absolute;
+      left: var(--x, 50%); top: var(--y, 50%);
+      transform: translate(-50%, -50%) rotate(var(--rot, 0deg));
+      width: var(--w, 220px); height:auto;
+      opacity: var(--op, .85);
+      image-rendering: -webkit-optimize-contrast;
+      mix-blend-mode: multiply;
+    }
+
+    /* faixa de estilo Persona no rodapé da carta */
+    .edge{
+      width:100%; height:12px; margin:16px auto 0;
+      background:
+        linear-gradient(90deg, #fff 0 8%, transparent 8% 12%, var(--red) 12% 24%, transparent 24% 28%,
+                                #fff 28% 32%, transparent 32% 36%, #ff7280 36% 48%, transparent 48% 52%,
+                                #fff 52% 56%, transparent 56% 60%, var(--red) 60% 76%, transparent 76% 80%,
+                                #fff 80% 84%, transparent 84% 88%, #ff7280 88% 100%);
+      filter: drop-shadow(0 -2px 8px rgba(230,0,18,.35));
+      border-radius:10px;
+    }
+
+    /* ======== OVERLAY FORA DA CARTA ======== */
+    .overlay-layer{
+      position:absolute;
+      inset:0;
+      z-index:40;
+      pointer-events:none;
+    }
+    .overlay-decor{
+      position:absolute;
+      left: var(--x, 50%); top: var(--y, 50%);
+      transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(.94);
+      width: var(--w, 320px); height:auto;
+      opacity:0;
+      filter: saturate(1) contrast(1);
+      image-rendering: -webkit-optimize-contrast;
+      transition: opacity .45s ease, transform .55s cubic-bezier(.2,.8,.2,1);
+    }
+    .overlay-active .overlay-decor{
+      opacity: var(--op, .95);
+      transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(1);
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .envelope, .flap-group, .letter{ transition:none }
+      .overlay-decor{ transition:none }
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card">
-      <div class="hearts" id="hearts"></div>
+  <div class="stage">
+    <div class="hud">
+      <button id="musicToggle" class="btn btn-music" aria-pressed="true" aria-label="Música ligada">🎵 ON</button>
+    </div>
 
-      <header>
-        <span class="tag">calling card</span>
-        <h1>Para <span style="color:var(--pink)">Hermiony</span>, do Samuel</h1>
-      </header>
-      <p class="sub">Se o destino é um dado, hoje eu escolho arriscar por nós dois.</p>
+    <div class="wrap" id="wrap">
+      <!-- ENVELOPE -->
+      <div class="envelope" id="envelope" aria-label="Envelope — clique no selo para abrir">
+        <div class="body" aria-hidden="true"></div>
 
-      <div class="cta">
-        <button class="btn-primary" id="open">Abrir a carta</button>
-        <button class="btn-ghost" id="copy">Copiar link desta página</button>
+        <!-- GRUPO QUE SOBE: contorno + aba + SELO -->
+        <div class="flap-group">
+          <div class="flap-edge" aria-hidden="true"></div>
+          <div class="flap" aria-hidden="true"></div>
+          <button class="seal" id="sealBtn" aria-label="Abrir pelo selo">
+            <img src="assets/img/wax-seal.png" alt="Selo">
+          </button>
+        </div>
+
+        <!-- DECORAÇÃO (abaixo do triângulo, sobre o corpo do envelope) -->
+        <img class="decoration" src="assets/img/decoracao-1.png" alt="" aria-hidden="true" />
       </div>
 
-      <section class="letter" id="letter">
-        <div class="paper">
-          <p><strong>Hermiony,</strong></p>
-          <p>Ontem, quando você disse que daria uma chance, meu coração ficou leve de novo. Eu sei que a gente errou muito um com o outro, mas eu acredito de verdade que a nossa história não precisa acabar assim.</p>
-          <p>Eu não tô aqui pra te cobrar nada nem forçar. Só quero viver essa chance junto com você: sair, conversar, jogar, rir… e ver se a gente consegue reencontrar aquele sentimento que sempre foi nosso.</p>
-          <p>Eu sei que falhei, que já te machuquei, e me arrependo muito. Mas eu quero aprender com meus erros e ser melhor, porque você merece essa versão de mim.</p>
-          <p>Eu não quero ficar preso à dor do que aconteceu. Eu te perdoo, e espero que com o tempo você também consiga me perdoar. O que eu quero mesmo é construir algo novo contigo, de coração limpo e sincero.</p>
-          <p>Eu te amo de verdade… e só te peço essa chance de recomeçar com você. Não precisa ser perfeito, nem rápido. Só precisa ser nós dois tentando juntos.</p>
-          <p class="sig">— Samuel</p>
+      <!-- CARTA -->
+      <section class="letter" id="letter" aria-live="polite">
+        <div class="paper" id="paper">
+          <div class="paper-decor--under"></div>
+
+          <!-- CONTEÚDO DO TEXTO (clicável para FECHAR) -->
+          <div class="paper-content" id="paperContent" role="button" tabindex="0" title="Clique para fechar">
+            <p><strong>Para: Lady Moon,</strong></p>
+            <p>Ontem, quando você me disse que estaria disposta a dar uma chance, meu coração se aliviou como não sentia há muito tempo. Eu sei que nós erramos — eu falhei contigo e você comigo — mas continuo acreditando que a nossa história não precisa acabar assim.</p>
+            <p>Eu não estou aqui para te cobrar nada, nem para forçar sentimentos. Só quero viver essa chance que você mesma ofereceu: sair, conversar, rir, jogar… e reencontrar aquele amor romântico que sempre foi só nosso.</p>
+            <p>Eu reconheço os erros que cometi, e sei a dor que te causei. Mas aprendi com isso e estou disposto a ser melhor, porque você merece essa versão de mim. Sobre o que aconteceu entre nós, não quero mais viver preso às mágoas: eu te perdoo, e espero que com o tempo você também consiga me perdoar.</p>
+            <p>Mas não pense que isso é apenas uma súplica comum. Hoje, neste parque — o mesmo em que gravamos nossas iniciais dentro de um coração naquela árvore, símbolo de dois anos lado a lado após a escola — eu declaro minha verdadeira missão: roubar de volta o seu coração, revelar seu tesouro e reconquistar o seu amor romântico.</p>
+            <p>Prepare-se, Hermiony. Assim como os Phantom Thieves, não falho em minha missão. Depois do pastel, diante daquela árvore que ainda guarda nosso símbolo, eu irei te abraçar… e, se me permitir, te beijar.</p>
+            <p>E então, diante de tudo que passamos e de tudo que ainda podemos viver, eu pergunto:</p>
+            <p>Posso roubar o seu coração — e voltar a ser o seu namorado?</p>
+            <p class="sig">— Samuel, o ladrão que nunca desistiu de você.</p>
+            <div class="edge" aria-hidden="true"></div>
+          </div>
+
+          <div class="paper-decor--over"></div>
         </div>
       </section>
 
-      <div class="edge"></div>
-
-      <footer>
-        Feito com carinho. Se isso fosse <em>Persona 5</em>, este seria o meu <strong>calling card</strong> <3
-      </footer>
+      <!-- OVERLAY POR CIMA DE TUDO DA CARTA -->
+      <div class="overlay-layer" id="overlayLayer">
+        <img class="overlay-decor"
+             src="assets/img/overlay-decor-1.png"
+             alt="" aria-hidden="true"
+             style="--x: 82%; --y: 70%; --w: 260px; --rot: -6deg; --op: .98;" />
+      </div>
     </div>
   </div>
 
+  <!-- ÁUDIO -->
+  <audio id="bgm" src="assets/audio/calling-card-theme.mp3" loop preload="auto"></audio>
+
   <script>
-    // toggle letter
-    const openBtn = document.getElementById('open');
-    const letter = document.getElementById('letter');
-    openBtn.addEventListener('click', () => {
-      letter.classList.toggle('show');
-      openBtn.textContent = letter.classList.contains('show') ? 'Fechar' : 'Abrir a carta';
+    const envelope     = document.getElementById('envelope');
+    const sealBtn      = document.getElementById('sealBtn');
+    const letter       = document.getElementById('letter');
+    const bgm          = document.getElementById('bgm');
+    const toggle       = document.getElementById('musicToggle');
+    const overlay      = document.getElementById('overlayLayer');
+    const paperContent = document.getElementById('paperContent');
+    const rootStyles   = getComputedStyle(document.documentElement);
+
+    let hasInteracted = false;
+
+    function startMusicOnce(){
+      if(hasInteracted) return;
+      hasInteracted = true;
+      safePlay();
+    }
+
+    function safePlay(){
+      bgm.loop = true;
+      const p = bgm.play();
+      if(p && typeof p.catch === 'function'){ p.catch(()=>{}); }
+      toggle.setAttribute('aria-pressed','true');
+      toggle.textContent = '🎵 ON';
+    }
+
+    function fadeTo(targetVol=1, ms=350){
+      const steps = 18, step = (targetVol - bgm.volume)/steps;
+      let i=0;
+      const id = setInterval(()=>{
+        bgm.volume = Math.max(0, Math.min(1, bgm.volume + step));
+        if(++i>=steps){ bgm.volume = targetVol; clearInterval(id); if(targetVol===0){ bgm.pause(); } }
+      }, ms/steps);
+    }
+
+    // mede o conteúdo e anima até a altura EXATA (sem cortar o texto)
+    function setOpenHeight(){
+      const target = letter.scrollHeight;
+      letter.style.setProperty('--_openH', target + 'px'); // útil p/ .letter.scroll.show
+      letter.style.maxHeight = target + 'px';
+    }
+
+    function openLetter(){
+      // >>> RESTAURADO: abre o triângulo
+      envelope.classList.add('open');
+
+      letter.classList.add('show');
+      requestAnimationFrame(()=>{ setOpenHeight(); });
+
+      const onEnd = (ev)=>{
+        if(ev.target === letter && ev.propertyName === 'max-height'){
+          overlay.classList.add('overlay-active');
+          letter.removeEventListener('transitionend', onEnd);
+        }
+      };
+      letter.addEventListener('transitionend', onEnd);
+    }
+
+    function closeLetter(){
+      overlay.classList.remove('overlay-active');
+
+      // >>> RESTAURADO: fecha o triângulo
+      envelope.classList.remove('open');
+
+      const closed = rootStyles.getPropertyValue('--letter-closed-h').trim() || '0px';
+      letter.style.maxHeight = closed;
+      const onEnd = (ev)=>{
+        if(ev.target === letter && ev.propertyName === 'max-height'){
+          letter.classList.remove('show');
+          letter.removeEventListener('transitionend', onEnd);
+        }
+      };
+      letter.addEventListener('transitionend', onEnd);
+    }
+
+    window.addEventListener('resize', ()=>{
+      if(letter.classList.contains('show')) setOpenHeight();
     });
 
-    // copy link
-    const copyBtn = document.getElementById('copy');
-    copyBtn.addEventListener('click', async () => {
-      try{
-        await navigator.clipboard.writeText(location.href);
-        copyBtn.textContent = 'Link copiado ✓';
-        setTimeout(()=> copyBtn.textContent = 'Copiar link desta página', 1800);
-      }catch(e){
-        alert('Copie o link da barra de endereços 🙂');
+    // 1º clique em qualquer parte do envelope: só inicia a música
+    envelope.addEventListener('click', startMusicOnce);
+
+    // Abrir SOMENTE pelo selo
+    sealBtn.addEventListener('click', (ev)=>{
+      ev.stopPropagation();
+      startMusicOnce();
+      openLetter();
+    });
+
+    // Fechar: clicando na área do texto
+    paperContent.addEventListener('click', closeLetter);
+
+    // Teclado (acessibilidade): Enter/Espaço fecha
+    paperContent.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        closeLetter();
       }
     });
 
-    // floating hearts
-    const hearts = document.getElementById('hearts');
-    const NUM = 20;
-    for(let i=0;i<NUM;i++){
-      const s = document.createElement('span');
-      s.textContent = '❤';
-      const left = Math.random()*100;
-      const delay = Math.random()*6;
-      const dur = 6 + Math.random()*6;
-      s.style.left = left + 'vw';
-      s.style.animationDelay = delay + 's';
-      s.style.setProperty('--dur', dur + 's');
-      hearts.appendChild(s);
-    }
+    // botão de música
+    toggle.addEventListener('click', ()=>{
+      const on = toggle.getAttribute('aria-pressed') === 'true';
+      if(on){
+        toggle.setAttribute('aria-pressed','false');
+        toggle.textContent = '🔇 OFF';
+        fadeTo(0, 300);
+      }else{
+        toggle.setAttribute('aria-pressed','true');
+        toggle.textContent = '🎵 ON';
+        if(bgm.paused){ bgm.volume = 0; safePlay(); }
+        fadeTo(1, 300);
+      }
+    });
+
+    // acessibilidade: Enter/Espaço no selo abre
+    sealBtn.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        startMusicOnce();
+        openLetter();
+      }
+    });
   </script>
 </body>
 </html>
